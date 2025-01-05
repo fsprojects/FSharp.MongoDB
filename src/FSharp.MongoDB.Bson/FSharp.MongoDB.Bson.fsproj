@@ -36,8 +36,8 @@
     <Authors>Max Hirschhorn;Pierre Chalamet</Authors>
     <Description>Add F# support to MongoDB.Driver</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/pchalamet/FSharp.MongoDB</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/pchalamet/FSharp.MongoDB</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/fsprojects/FSharp.MongoDB</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fsprojects/FSharp.MongoDB</RepositoryUrl>
     <PackageTags>f#;fsharp;mongodB;driver</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
