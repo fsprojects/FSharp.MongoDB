@@ -33,7 +33,7 @@ module FSharp =
             member _.GetSerializer typ =
                 let mkSerializer typ = 
                     typ
-                    |> Option.map (fun typ -> System.Activator.CreateInstance typ :?> IBsonSerializer)
+                    |> Option.map (fun typ -> System.Activator.CreateInstance typ |> nonNull :?> IBsonSerializer)
                     |> Option.toObj
 
                 match typ with
