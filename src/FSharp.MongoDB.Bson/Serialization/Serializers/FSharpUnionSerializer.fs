@@ -38,7 +38,7 @@ type FSharpUnionSerializer<'T>() =
         let mkClassMapSerializer (caseType:System.Type) =
             let classMap = BsonClassMap.LookupClassMap caseType
             let serializerType = typedefof<BsonClassMapSerializer<_>>.MakeGenericType [| caseType |]
-            System.Activator.CreateInstance(serializerType, classMap) :?> IBsonSerializer
+            System.Activator.CreateInstance(serializerType, classMap) |> nonNull :?> IBsonSerializer
 
         // 8.5.4. Compiled Form of Union Types for Use from Other CLI Languages
         //   A compiled union type U has [o]ne CLI nested type U.C for each non-null union case C.
