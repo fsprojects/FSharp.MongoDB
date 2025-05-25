@@ -98,5 +98,12 @@ module private Helpers =
     /// <summary>
     /// Maps a member of a <c>BsonClassMap</c> to a nullable value if possible.
     /// </summary>
-    let mapMemberNullable (memberMap: BsonClassMap) (propertyInfo: PropertyInfo) =
-        memberMap.MapMember(propertyInfo) |> ignore
+    let mapMemberNullable (classMap: BsonClassMap) (propertyInfo: PropertyInfo) =
+        let memberMap = classMap.MapMember(propertyInfo)
+#if !NETSTANDARD2_1
+        let nrtInfo = nrtContext.Create(propertyInfo)
+        if nrtInfo.WriteState = NullabilityState.Nullable then
+            memberMap.SetDefaultValue(objnull) |> ignore
+#else
+        ()
+#endif

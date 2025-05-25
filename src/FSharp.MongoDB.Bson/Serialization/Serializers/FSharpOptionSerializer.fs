@@ -40,4 +40,4 @@ type FSharpOptionSerializer<'T when 'T: not null>() =
 
         match reader.GetCurrentBsonType() with
         | BsonType.Null -> reader.ReadNull(); None
-        | _ -> Some (serializer.Value.Deserialize(context, args))
+        | t -> Some (serializer.Value.Deserialize(context, args))
