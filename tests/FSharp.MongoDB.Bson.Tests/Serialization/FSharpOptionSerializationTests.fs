@@ -21,24 +21,30 @@ open NUnit.Framework
 
 module FSharpOptionSerialization =
 
+    type Record =
+        { Value: string }
+    
     type Primitive =
         { Bool : bool option
           Int : int option
           String : string option
-          Float : float option }
+          Float : float option
+          Record: Record option }
 
     [<Test>]
     let ``test serialize optional primitives (none) in a record type``() =
         let value =  { Bool = None
                        Int = None
                        String = None
-                       Float = None }
+                       Float = None
+                       Record = None }
 
         let result = serialize value
         let expected = BsonDocument([ BsonElement("Bool", BsonNull.Value)
                                       BsonElement("Int", BsonNull.Value)
                                       BsonElement("String", BsonNull.Value)
-                                      BsonElement("Float", BsonNull.Value) ])
+                                      BsonElement("Float", BsonNull.Value)
+                                      BsonElement("Record", BsonNull.Value) ])
 
         result |> should equal expected
 
@@ -50,7 +56,8 @@ module FSharpOptionSerialization =
         let expected = { Bool = None
                          Int = None
                          String = None
-                         Float = None }
+                         Float = None
+                         Record = None }
 
         result |> should equal expected
 
@@ -59,13 +66,15 @@ module FSharpOptionSerialization =
         let value =  { Bool = Some false
                        Int = Some 0
                        String = Some "0.0"
-                       Float = Some 0.0 }
+                       Float = Some 0.0
+                       Record = Some { Value = "value" } }
 
         let result = serialize value
         let expected = BsonDocument([ BsonElement("Bool", BsonBoolean false)
                                       BsonElement("Int", BsonInt32 0)
                                       BsonElement("String", BsonString "0.0")
-                                      BsonElement("Float", BsonDouble 0.0) ])
+                                      BsonElement("Float", BsonDouble 0.0)
+                                      BsonElement("Record", BsonDocument([ BsonElement("Value", "value") ])) ])
 
         result |> should equal expected
 
@@ -74,12 +83,14 @@ module FSharpOptionSerialization =
         let doc = BsonDocument([ BsonElement("Bool", BsonBoolean true)
                                  BsonElement("Int", BsonInt32 1)
                                  BsonElement("String", BsonString "1.0")
-                                 BsonElement("Float", BsonDouble 1.0) ])
+                                 BsonElement("Float", BsonDouble 1.0)
+                                 BsonElement("Record", BsonDocument([ BsonElement("Value", "value") ])) ])
 
         let result = deserialize<Primitive> doc
         let expected = { Bool = Some true
                          Int = Some 1
                          String = Some "1.0"
-                         Float = Some 1.0 }
+                         Float = Some 1.0
+                         Record = Some { Value = "value" } }
 
         result |> should equal expected
