@@ -102,8 +102,8 @@ module private Helpers =
         let memberMap = classMap.MapMember(propertyInfo)
 #if !NETSTANDARD2_1
         let nrtInfo = nrtContext.Create(propertyInfo)
-        if nrtInfo.WriteState = NullabilityState.Nullable then
+        if nrtInfo.ReadState = NullabilityState.Nullable then
             memberMap.SetDefaultValue(objnull) |> ignore
 #else
-        ()
+        memberMap.SetDefaultValue(objnull) |> ignore
 #endif
