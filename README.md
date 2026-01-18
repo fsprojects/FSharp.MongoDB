@@ -21,9 +21,9 @@ Repository origins are:
 
 ## Supported platforms
 
-This project targets `.net 8`, `.net 9` and  `netstandard2.1` ([compatible runtimes](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-1#select-net-standard-version))
+This project targets `.net 8`, `.net 9`, `.net 10` and  `netstandard2.1` ([compatible runtimes](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-1#select-net-standard-version))
 
-:warning: NRT support starts with `.net sdk 9.0.200`. F# compiler in .net sdk 9.0.10x does not set correctly nullable attributes on F# types. NRT are not supported on `netstandard2.1`.
+:warning: NRT support starts with `.net sdk 9.0.200`. F# compiler in .net sdk 9.0.10x does not set correctly nullable attributes on F# types. NRT are not supported on `netstandard2.1`. Anyway, it's better to use latest `.net sdk 10.0.100` at least.
 
 ## Contributing
   * If you have a question about the library, then create an [issue][issues] with the `question` label.
