@@ -18,25 +18,25 @@ public record Value
 
 public record RecordDataModel
 {
-    public ObjectId Id { get; init; }
+    // public ObjectId Id { get; init; }
+    //
+    // public required int Int { get; init; }
+    // public int? IntOpt { get; init; }
+    //
+    // public required string String { get; init; }
+    // public string? StringOpt { get; init; }
+    //
+    // public required int[] Array { get; init; }
+    // public int[]? ArrayOpt { get; init; }
 
-    public required int Int { get; init; }
-    public int? IntOpt { get; init; }
+    // public required Value Value { get; init; }
+    // public Value? ValueOpt { get; init; }
 
-    public required string String { get; init; }
-    public string? StringOpt { get; init; }
+    // public required Value[] ValueArray { get; init; }
+    // public Value[]? ValueArrayOpt { get; init; }
 
-    public required int[] Array { get; init; }
-    public int[]? ArrayOpt { get; init; }
-
-    public required Value Value { get; init; }
-    public Value? ValueOpt { get; init; }
-
-    public required Value[] ValueArray { get; init; }
-    public Value[]? ValueArrayOpt { get; init; }
-
-    public required Pair Record { get; init; }
+    // public required Pair Record { get; init; }
     public Pair? RecordOpt { get; init; }
 
-    public required Dictionary<string, int> Map { get; init; }
+    // public required Dictionary<string, int> Map { get; init; }
 }

@@ -26,13 +26,16 @@ open MongoDB.Bson.Serialization.Serializers
 type FSharpValueOptionSerializer<'T when 'T: not null>() =
     inherit SerializerBase<'T voption>()
 
-    let serializer = lazy (BsonSerializer.LookupSerializer<'T>())
+    let serializer : Lazy<IBsonSerializer<'T>> =
+        lazy (BsonSerializer.LookupSerializer<'T>())
 
     override _.Serialize (context, args, value) =
         let writer = context.Writer
 
         match value with
-        | ValueSome x -> serializer.Value.Serialize(context, args, x :> obj)
+        | ValueSome x ->
+            // Serialize using the inner serializer's nominal type.
+            serializer.Value.Serialize(context, x)
         | ValueNone -> writer.WriteNull()
 
     override _.Deserialize (context, args) =
@@ -40,4 +43,6 @@ type FSharpValueOptionSerializer<'T when 'T: not null>() =
 
         match reader.GetCurrentBsonType() with
         | BsonType.Null -> reader.ReadNull(); ValueNone
-        | _ -> ValueSome (serializer.Value.Deserialize(context, args))
+        | _ ->
+            // Use the inner serializer's nominal type to avoid recursing through the option serializer.
+            ValueSome (serializer.Value.Deserialize(context))

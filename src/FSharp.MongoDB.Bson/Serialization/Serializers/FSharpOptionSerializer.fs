@@ -26,7 +26,8 @@ open MongoDB.Bson.Serialization.Serializers
 type FSharpOptionSerializer<'T when 'T: not null>() =
     inherit SerializerBase<'T option>()
 
-    let serializer = lazy (BsonSerializer.LookupSerializer<'T>())
+    let serializer : Lazy<IBsonSerializer<'T>> =
+        lazy (BsonSerializer.LookupSerializer<'T>())
 
     override _.Serialize (context, args, value) =
         let writer = context.Writer
@@ -40,4 +41,6 @@ type FSharpOptionSerializer<'T when 'T: not null>() =
 
         match reader.GetCurrentBsonType() with
         | BsonType.Null -> reader.ReadNull(); None
-        | _ -> Some (serializer.Value.Deserialize(context, args))
+        | _ ->
+            // Use the inner serializer's nominal type to avoid recursing through the option serializer.
+            Some (serializer.Value.Deserialize(context))

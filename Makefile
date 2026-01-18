@@ -10,3 +10,6 @@ test:
 
 nuget:
 	dotnet pack -c $(config) -p:Version=$(version) -o .out
+
+upgrade:
+	dotnet restore --force-evaluate
