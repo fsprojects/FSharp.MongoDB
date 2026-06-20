@@ -61,7 +61,19 @@ MongoDB.Bson.Serialization.FSharp.register()
 `Seq<_>` is serialized as an array. Order is preserved.
 
 ## Map
-`Map<_, _>` is serialized as an object. Do not rely on the order of the keys.
+`Map<_, _>` is serialized as an array of documents using `DictionaryRepresentation.ArrayOfDocuments`.
+Each entry is stored as `{ "k": <key>, "v": <value> }`.
+
+This representation correctly round-trips maps with any key type, including numeric types such as `uint`, `int`, etc.
+
+Example — `Map<uint, string>` with one entry:
+```json
+[{ "k": 1, "v": "Trivial" }]
+```
+
+> **Note:** Previous versions serialized maps as BSON objects (field names as strings), which caused
+> deserialization to silently return an empty map for non-`string` key types. Existing documents
+> stored in the old format must be migrated before upgrading.
 
 ## Option
 `Option<_>` is either serialized as:

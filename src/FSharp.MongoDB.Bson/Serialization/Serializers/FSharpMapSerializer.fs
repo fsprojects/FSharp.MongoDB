@@ -24,7 +24,10 @@ open MongoDB.Bson.Serialization.Serializers
 type FSharpMapSerializer<'KeyType, 'ValueType when 'KeyType : comparison and 'KeyType: not null>() =
     inherit SerializerBase<Map<'KeyType, 'ValueType>>()
 
-    let serializer = DictionaryInterfaceImplementerSerializer<Dictionary<'KeyType, 'ValueType>>()
+    let serializer =
+        DictionaryInterfaceImplementerSerializer<Dictionary<'KeyType, 'ValueType>>(
+            MongoDB.Bson.Serialization.Options.DictionaryRepresentation.ArrayOfDocuments
+        )
 
     override _.Serialize (context, args, mapValue) =
         let dictValue = Dictionary()
