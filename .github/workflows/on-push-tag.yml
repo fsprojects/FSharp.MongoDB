@@ -37,6 +37,24 @@ jobs:
       - name: Build, test, and pack
         run: make publish-all config=Release version=${{ env.BUILD_VERSION }}
 
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-tag
+          path: TestResults/**/*.trx
+          if-no-files-found: warn
+
+      - name: Publish test report
+        if: (!cancelled())
+        continue-on-error: true
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: TestResults/**/*.trx
+          check_name: Test Results (Tag)
+          comment_mode: off
+          job_summary: true
+
       - name: Extract release notes from changelog
         shell: bash
         run: ./.github/scripts/extract-release-notes.sh "${GITHUB_REF_NAME}" > "${RUNNER_TEMP}/release-notes.md"

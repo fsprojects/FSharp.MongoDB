@@ -13,6 +13,7 @@ on:
 permissions:
   contents: read
   checks: write
+  pull-requests: write
 
 jobs:
   build-and-test:
@@ -53,10 +54,12 @@ jobs:
           if-no-files-found: warn
 
       - name: Publish test report
-        if: always()
+        if: (!cancelled())
         continue-on-error: true
-        uses: dorny/test-reporter@v2
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          name: Test Results (PR)
-          path: TestResults/**/*.trx
-          reporter: dotnet-trx
+          files: TestResults/**/*.trx
+          check_name: Test Results (PR)
+          comment_title: Test Results (PR)
+          comment_mode: always
+          job_summary: true
