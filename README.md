@@ -30,6 +30,34 @@ This project targets `.net 8`, `.net 9`, `.net 10` and  `netstandard2.1` ([compa
   * If you'd like to report a bug or submit a feature request, then create an [issue][issues] with the appropriate label.
   * If you'd like to contribute, then feel free to send a [pull request][pull_requests].
 
+## Release management
+
+Prepare a release locally with:
+
+```sh
+make release-prepare version=0.5.0
+```
+
+Pre-releases use the same flow with a suffix, for example:
+
+```sh
+make release-prepare version=0.5.0-beta
+```
+
+This command validates the changelog, moves the current `Unreleased` notes into a new versioned section, creates the release commit, and creates the corresponding git tag.
+
+Then push the release commit and tag:
+
+```sh
+git push origin main --follow-tags
+```
+
+After the tag is pushed, GitHub Actions:
+
+1. Builds, tests, and validates the release on the tag workflow.
+2. Packs the NuGet artifact and creates a draft GitHub release from the changelog entry.
+3. Publishes the package to NuGet when the GitHub release is published.
+
 # Usage
 
 ## Installation
