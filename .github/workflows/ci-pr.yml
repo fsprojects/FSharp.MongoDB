@@ -1,10 +1,14 @@
-name: CI Branches
+name: CI PR
 
 on:
-  push:
+  pull_request:
     branches:
-      - '**'
-  workflow_dispatch:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
 
 permissions:
   contents: read
@@ -21,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Enforce changelog updates on every commit
+      - name: Enforce unreleased changelog updates
         env:
           REQUIRE_CHANGELOG_ALWAYS: "true"
         run: .github/scripts/check-unreleased-changelog.sh
@@ -40,14 +44,11 @@ jobs:
       - name: Test
         run: dotnet test FSharp.MongoDB.sln --configuration Release --no-build --logger "trx" --results-directory TestResults
 
-      - name: Build NuGet package
-        run: dotnet pack src/FSharp.MongoDB.Bson/FSharp.MongoDB.Bson.fsproj --configuration Release --no-build -o .out
-
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-branches
+          name: test-results-pr
           path: TestResults/**/*.trx
           if-no-files-found: warn
 
@@ -56,6 +57,6 @@ jobs:
         continue-on-error: true
         uses: dorny/test-reporter@v2
         with:
-          name: Test Results (Branches)
+          name: Test Results (PR)
           path: TestResults/**/*.trx
           reporter: dotnet-trx
