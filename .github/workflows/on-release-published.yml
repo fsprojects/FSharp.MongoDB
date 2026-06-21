@@ -1,25 +1,34 @@
-name: 🍿 On Release Published
-run-name: Release ${{github.ref_name}}
+name: Release
+run-name: Release ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
   release:
-    types: [published]
+    types:
+      - published
+
+env:
+  RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
 
 jobs:
   release-nuget:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v4.2.0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.100
 
-      - name: Download Release artifacts
+      - name: Download GitHub release artifacts
         uses: robinraju/release-downloader@v1.11
         with:
-          tag: ${{github.ref_name}}
+          tag: ${{ env.RELEASE_TAG }}
           fileName: '*.nupkg'
 
-      - name: Publish NuGet
-        run: dotnet nuget push *.nupkg -k ${{secrets.NUGET_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: Push packages to NuGet
+        run: |
+          shopt -s nullglob
+          for pkg in ./*.nupkg; do
+            dotnet nuget push "$pkg" --skip-duplicate --api-key "${{ secrets.NUGET_KEY }}" --source https://api.nuget.org/v3/index.json
+          done
