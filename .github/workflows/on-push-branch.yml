@@ -52,10 +52,11 @@ jobs:
           if-no-files-found: warn
 
       - name: Publish test report
-        if: always()
+        if: (!cancelled())
         continue-on-error: true
-        uses: dorny/test-reporter@v2
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          name: Test Results (Branches)
-          path: TestResults/**/*.trx
-          reporter: dotnet-trx
+          files: TestResults/**/*.trx
+          check_name: Test Results (Branches)
+          comment_mode: off
+          job_summary: true
