@@ -4,6 +4,8 @@ All notable changes to FSharp.MongoDB are documented in this file.
 
 ## [Unreleased]
 
+- Fixed F# map support for `BsonDictionaryOptions`, including `ArrayOfDocuments` coverage.
+
 ## [0.5.0-beta]
 
 

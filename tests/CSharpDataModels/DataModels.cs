@@ -1,5 +1,7 @@
 ﻿namespace CSharpDataModels;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Options;
 
 public record Pair
 {
@@ -39,4 +41,12 @@ public record RecordDataModel
     public Pair? RecordOpt { get; init; }
 
     public required Dictionary<string, int> Map { get; init; }
+}
+
+public record UserId([property: BsonGuidRepresentation(GuidRepresentation.Standard)] Guid Value);
+
+public record UserMapDocument
+{
+    [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfDocuments)]
+    public required Dictionary<UserId, string> Users { get; init; }
 }

@@ -16,15 +16,19 @@
 namespace MongoDB.Bson.Serialization.Serializers
 
 open System.Collections.Generic
+open MongoDB.Bson.Serialization
+open MongoDB.Bson.Serialization.Options
 open MongoDB.Bson.Serialization.Serializers
 
 /// <summary>
 /// Serializer for F# maps.
 /// </summary>
-type FSharpMapSerializer<'KeyType, 'ValueType when 'KeyType : comparison and 'KeyType: not null>() =
+type FSharpMapSerializer<'KeyType, 'ValueType when 'KeyType : comparison and 'KeyType: not null>
+    (
+        serializer:
+            DictionaryInterfaceImplementerSerializer<Dictionary<'KeyType, 'ValueType>, 'KeyType, 'ValueType>
+    ) =
     inherit SerializerBase<Map<'KeyType, 'ValueType>>()
-
-    let serializer = DictionaryInterfaceImplementerSerializer<Dictionary<'KeyType, 'ValueType>>()
 
     override _.Serialize (context, args, mapValue) =
         let dictValue = Dictionary()
@@ -36,3 +40,23 @@ type FSharpMapSerializer<'KeyType, 'ValueType when 'KeyType : comparison and 'Ke
         serializer.Deserialize(context, args)
         |> Seq.map (|KeyValue|)
         |> Map.ofSeq
+
+    interface IBsonDictionarySerializer with
+        member _.DictionaryRepresentation = serializer.DictionaryRepresentation
+        member _.KeySerializer = serializer.KeySerializer :> IBsonSerializer
+        member _.ValueSerializer = serializer.ValueSerializer :> IBsonSerializer
+
+    interface IDictionaryRepresentationConfigurable with
+        member _.DictionaryRepresentation = serializer.DictionaryRepresentation
+        member _.WithDictionaryRepresentation dictionaryRepresentation =
+            FSharpMapSerializer<'KeyType, 'ValueType>(serializer.WithDictionaryRepresentation(dictionaryRepresentation))
+            :> IBsonSerializer
+
+    interface IDictionaryRepresentationConfigurable<FSharpMapSerializer<'KeyType, 'ValueType>> with
+        member _.WithDictionaryRepresentation dictionaryRepresentation =
+            FSharpMapSerializer<'KeyType, 'ValueType>(serializer.WithDictionaryRepresentation(dictionaryRepresentation))
+
+    new () =
+        FSharpMapSerializer<'KeyType, 'ValueType>(
+            DictionaryInterfaceImplementerSerializer<Dictionary<'KeyType, 'ValueType>, 'KeyType, 'ValueType>()
+        )
