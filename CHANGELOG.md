@@ -4,10 +4,15 @@ All notable changes to FSharp.MongoDB are documented in this file.
 
 ## [Unreleased]
 
+## [0.5.0-beta]
+
+
 - Documented the release management flow in the README, including stable and `-beta` release preparation.
 - Added GitHub test result publishing across PR, branch, and tag workflows, including Actions job summaries and PR comments.
 - Updated the repository and GitHub Actions workflows to use the .NET SDK `10.0.301` baseline.
 - Restored the isomorphic serialization test coverage to guard C# and F# BSON parity again.
+
+**Full Changelog**: https://github.com/fsprojects/FSharp.MongoDB/compare/0.4.0-beta...0.5.0-beta
 
 ## [0.4.0-beta]
 
