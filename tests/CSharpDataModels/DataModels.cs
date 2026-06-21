@@ -2,6 +2,18 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Options;
+using MongoDB.Bson.Serialization.Serializers;
+
+public sealed class GuidStringDictionarySerializer : DictionaryInterfaceImplementerSerializer<Dictionary<Guid, string>, Guid, string>
+{
+    public GuidStringDictionarySerializer()
+        : base(
+            DictionaryRepresentation.ArrayOfDocuments,
+            new GuidSerializer(GuidRepresentation.Standard),
+            new StringSerializer())
+    {
+    }
+}
 
 public record Pair
 {
@@ -41,6 +53,10 @@ public record RecordDataModel
     public Pair? RecordOpt { get; init; }
 
     public required Dictionary<string, int> Map { get; init; }
+    [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfDocuments)]
+    public required Dictionary<int, int> IntKeyMap { get; init; }
+    [BsonSerializer(typeof(GuidStringDictionarySerializer))]
+    public required Dictionary<Guid, string> GuidKeyMap { get; init; }
 }
 
 public record UserId([property: BsonGuidRepresentation(GuidRepresentation.Standard)] Guid Value);
