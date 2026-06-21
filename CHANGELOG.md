@@ -4,6 +4,7 @@ All notable changes to FSharp.MongoDB are documented in this file.
 
 ## [Unreleased]
 
+- Updated the test harness projects to target .NET 10 so local and CI test execution stays aligned with the repository SDK baseline.
 - Fixed F# map support for `BsonDictionaryOptions`, including `ArrayOfDocuments` coverage.
 
 ## [0.5.0-beta]
