@@ -4,6 +4,7 @@ All notable changes to FSharp.MongoDB are documented in this file.
 
 ## [Unreleased]
 
+- Added `CONTRIBUTING.md` with build guidance, contribution expectations, testing requirements, and issue-first guidance for breaking changes and proposed work.
 - Added `AGENTS.md` with contribution, release, branch naming, and pull request title guidance.
 - Updated the test harness projects to target .NET 10 so local and CI test execution stays aligned with the repository SDK baseline.
 - Fixed F# map support for `BsonDictionaryOptions`, including `ArrayOfDocuments` coverage.
