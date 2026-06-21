@@ -1,11 +1,23 @@
 namespace FSharp.MongoDB.Bson.Tests.Serialization
 
+open System
 open CSharpDataModels
 open FsUnit
-open NUnit.Framework
 open MongoDB.Bson
+open MongoDB.Bson.Serialization.Attributes
+open MongoDB.Bson.Serialization.Options
+open MongoDB.Bson.Serialization.Serializers
+open NUnit.Framework
 
 module IsomorphicSerialization =
+
+    type GuidStringMapSerializer() =
+        inherit
+            FSharpMapSerializer<Guid, string>(
+                DictionaryInterfaceImplementerSerializer<System.Collections.Generic.Dictionary<Guid, string>, Guid, string>(
+                    DictionaryRepresentation.ArrayOfDocuments,
+                    GuidSerializer(GuidRepresentation.Standard),
+                    StringSerializer()))
 
     type Pair =
         { First: int
@@ -39,7 +51,11 @@ module IsomorphicSerialization =
           Record: Pair
           RecordOpt: Pair option
           
-          Map: Map<string, int> }
+          Map: Map<string, int>
+          [<BsonDictionaryOptions(DictionaryRepresentation.ArrayOfDocuments)>]
+          IntKeyMap: Map<int, int>
+          [<BsonSerializer(typeof<GuidStringMapSerializer>)>]
+          GuidKeyMap: Map<Guid, string> }
 
     let ModelSome() =
         let csModel = 
@@ -48,7 +64,19 @@ module IsomorphicSerialization =
                 map.Add("1", 1)
                 map.Add("2", 2)
                 map
-            
+
+            let intKeyMap =
+                let map = System.Collections.Generic.Dictionary<int, int>()
+                map.Add(1, 10)
+                map.Add(2, 20)
+                map
+
+            let guidKeyMap =
+                let map = System.Collections.Generic.Dictionary<Guid, string>()
+                map.Add(Guid.Parse("1c6d4e6a-8f8c-4a9d-a7ce-28a7f6f1d111"), "two")
+                map.Add(Guid.Parse("550e8400-e29b-41d4-a716-446655440000"), "one")
+                map
+
             CSharpDataModels.RecordDataModel(
                 Id = ObjectId.GenerateNewId(),
                 Int = 42,
@@ -65,7 +93,9 @@ module IsomorphicSerialization =
                 ValueArrayOpt = [| CSharpDataModels.Value.IntValue(101) |],
                 Record = CSharpDataModels.Pair(First = 1, Second = "Second"),
                 RecordOpt = CSharpDataModels.Pair(First = -1, Second = "SecondOpt"),
-                Map = map)
+                Map = map,
+                IntKeyMap = intKeyMap,
+                GuidKeyMap = guidKeyMap)
 
         let fsModel =
             { Id = csModel.Id
@@ -81,7 +111,11 @@ module IsomorphicSerialization =
               ValueArrayOpt = Some [| Value.IntValue 101 |]
               Record = { First = 1; Second = Some "Second" }
               RecordOpt = Some { First = -1; Second = Some "SecondOpt" }
-              Map = Map [ "1", 1; "2", 2 ] }
+              Map = Map [ "1", 1; "2", 2 ]
+              IntKeyMap = Map [ 1, 10; 2, 20 ]
+              GuidKeyMap =
+                Map [ Guid.Parse("550e8400-e29b-41d4-a716-446655440000"), "one"
+                      Guid.Parse("1c6d4e6a-8f8c-4a9d-a7ce-28a7f6f1d111"), "two" ] }
 
         csModel, fsModel
 
@@ -92,7 +126,19 @@ module IsomorphicSerialization =
                 map.Add("1", 1)
                 map.Add("2", 2)
                 map
-            
+
+            let intKeyMap =
+                let map = System.Collections.Generic.Dictionary<int, int>()
+                map.Add(1, 10)
+                map.Add(2, 20)
+                map
+
+            let guidKeyMap =
+                let map = System.Collections.Generic.Dictionary<Guid, string>()
+                map.Add(Guid.Parse("1c6d4e6a-8f8c-4a9d-a7ce-28a7f6f1d111"), "two")
+                map.Add(Guid.Parse("550e8400-e29b-41d4-a716-446655440000"), "one")
+                map
+
             CSharpDataModels.RecordDataModel(
                 Id = ObjectId.GenerateNewId(),
                 Int = 42,
@@ -103,7 +149,9 @@ module IsomorphicSerialization =
                                 CSharpDataModels.Value.StringValue("String")
                                 CSharpDataModels.Value.PairValue(CSharpDataModels.Pair(First = 99, Second = "SecondPair")) |],
                 Record = CSharpDataModels.Pair(First = 1, Second = "Second"),
-                Map = map)
+                Map = map,
+                IntKeyMap = intKeyMap,
+                GuidKeyMap = guidKeyMap)
 
         let fsModel =
             { Id = csModel.Id
@@ -119,7 +167,11 @@ module IsomorphicSerialization =
               ValueArrayOpt = None
               Record = { First = 1; Second = Some "Second" }
               RecordOpt = None
-              Map = Map [ "1", 1; "2", 2 ] }
+              Map = Map [ "1", 1; "2", 2 ]
+              IntKeyMap = Map [ 1, 10; 2, 20 ]
+              GuidKeyMap =
+                Map [ Guid.Parse("550e8400-e29b-41d4-a716-446655440000"), "one"
+                      Guid.Parse("1c6d4e6a-8f8c-4a9d-a7ce-28a7f6f1d111"), "two" ] }
 
         csModel, fsModel
 
