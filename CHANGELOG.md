@@ -4,6 +4,10 @@ All notable changes to FSharp.MongoDB are documented in this file.
 
 ## [Unreleased]
 
+- Updated the required .NET SDK and all GitHub Actions workflows to `10.0.401`.
+- Updated MongoDB.Bson from `3.6.0` to `3.12.0` across the library and test projects.
+- Updated test dependencies to FsUnit `8.0.0`, NUnit `5.0.0`, NUnit3TestAdapter `6.3.1`, and Microsoft.NET.Test.Sdk `18.11.0`.
+
 ## [0.6.0-beta]
 
 
